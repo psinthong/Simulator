@@ -12,14 +12,12 @@ import java.util.concurrent.atomic.AtomicBoolean
 import org.apache.spark.executor.ExecutorBackend
 import org.apache.spark.util.Utils
 
+import scala.collection.mutable
 import scala.collection.mutable.HashMap
 import scala.io.Source
 
 class Executor(
-                executorId: String,
-                slaveHostname: String,
-                properties: Seq[(String, String)],
-                isLocal: Boolean = false) {
+                executorId: String) {
 
   private val EMPTY_BYTE_BUFFER = ByteBuffer.wrap(new Array[Byte](0))
 
@@ -40,14 +38,22 @@ class Executor(
   private var skipHeartbeat = false
 
 
-  val filename = "abc.txt"
-  val sleepTimes = List()
-  for(line <- Source.fromFile(filename).getLines()) {
-    println(line)
-    val s: Int = line.toInt
-    sleepTimes.++(List(s))
-  }
-
+//  val filename = "abc.txt"
+//  val sleepTimes = List()
+//  val ExecutorIdToSleepTime: HashMap[String,Int] = new HashMap[String,Int]
+//  for(line <- Source.fromFile(filename).getLines()) {
+//    println(line)
+//    val s: Int = line.toInt
+//    sleepTimes.++(List(s))
+//  }
+//
+//  for (i <- 0 to sleepTimes.size) {
+//    val thread = new Thread {
+//
+//    }
+//    thread.start
+//    Thread.sleep(50) // slow the loop down a bit
+//  }
   // Maintains the list of running tasks.
   private val runningTasks = new ConcurrentHashMap[Long, TaskRunner]
 
