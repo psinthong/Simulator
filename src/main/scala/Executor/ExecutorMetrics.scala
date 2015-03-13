@@ -5,7 +5,7 @@ package main.scala.Executor
  */
 
 import java.io.Serializable
-import scala.collection.mutable
+import scala.collection.mutable.ArrayBuffer
 
 class ExecutorMetrics extends Serializable {
   /**
