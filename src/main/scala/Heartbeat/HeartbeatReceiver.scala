@@ -20,12 +20,12 @@ private case class HeartbeatResponse()
 /**
  * Lives in the driver to receive heartbeats from executors..
  */
-private[spark] class HeartbeatReceiver(scheduler: TaskScheduler) {
+private class HeartbeatReceiver(scheduler: TaskScheduler) {
 
-  override def receiveWithLogging = {
-    case Heartbeat(executorId, taskMetrics) =>
-      val response = HeartbeatResponse(
-        !scheduler.executorHeartbeatReceived(executorId, taskMetrics))
-      sender ! response
-  }
+//  override def receiveWithLogging = {
+//    case Heartbeat(executorId, taskMetrics) =>
+//      val response = HeartbeatResponse(
+//        !scheduler.executorHeartbeatReceived(executorId, taskMetrics))
+//      sender ! response
+//  }
 }

@@ -21,7 +21,6 @@ import org.apache.spark.executor.{MultiIteratorMetrics, ExecutorMetrics}
   * So, when adding new fields, take into consideration that the whole object can be serialized for
   * shipping off at any time to consumers of the SparkListener interface.
   */
-@DeveloperApi
 class TaskMetrics extends Serializable {
   /**
    * Host's name the task runs on
@@ -81,7 +80,7 @@ class TaskMetrics extends Serializable {
    * This should only be used when recreating TaskMetrics, not when updating read metrics in
    * executors.
    */
-  private[spark] def setShuffleReadMetrics(shuffleReadMetrics: Option[ShuffleReadMetrics]) {
+  private def setShuffleReadMetrics(shuffleReadMetrics: Option[ShuffleReadMetrics]) {
     _shuffleReadMetrics = shuffleReadMetrics
   }
 
@@ -108,13 +107,13 @@ class TaskMetrics extends Serializable {
    * dependency, and merge these metrics before reporting them to the driver. This method returns
    * a ShuffleReadMetrics for a dependency and registers it for merging later.
    */
-  private [spark] def createShuffleReadMetricsForDependency(): ShuffleReadMetrics = synchronized {
+  private def createShuffleReadMetricsForDependency(): ShuffleReadMetrics = synchronized {
     val readMetrics = new ShuffleReadMetrics()
     depsShuffleReadMetrics += readMetrics
     readMetrics
   }
 
-  private [spark] def createExecutorMetrics(): ExecutorMetrics = synchronized {
+  private def createExecutorMetrics(): ExecutorMetrics = synchronized {
     val newMetrics = new ExecutorMetrics()
     executorMetricsHistory += newMetrics
     newMetrics
@@ -123,7 +122,7 @@ class TaskMetrics extends Serializable {
   /**
    * Aggregates shuffle read metrics for all registered dependencies into shuffleReadMetrics.
    */
-  private[spark] def updateShuffleReadMetrics() = synchronized {
+  private def updateShuffleReadMetrics() = synchronized {
     val merged = new ShuffleReadMetrics()
     for (depMetrics <- depsShuffleReadMetrics) {
       merged.fetchWaitTime += depMetrics.fetchWaitTime
@@ -131,7 +130,7 @@ class TaskMetrics extends Serializable {
       merged.remoteBlocksFetched += depMetrics.remoteBlocksFetched
       merged.remoteBytesRead += depMetrics.remoteBytesRead
       merged.shuffleFinishTime = math.max(merged.shuffleFinishTime, depMetrics.shuffleFinishTime)
-      merged.multiIteratorMetrics = depMetrics.multiIteratorMetrics
+//      merged.multiIteratorMetrics = depMetrics.multiIteratorMetrics
     }
     _shuffleReadMetrics = Some(merged)
   }
@@ -140,17 +139,17 @@ class TaskMetrics extends Serializable {
    * Aggregates shuffle read metrics for all registered dependencies into shuffleReadMetrics.
    */
 
-  private[spark] def updateExecutorMetrics() = synchronized {
+  private def updateExecutorMetrics() = synchronized {
     executorMetrics = executorMetricsHistory.headOption
   }
 
-  private[spark] def setExecutorMetrics(em: ExecutorMetrics): Unit = {
+  private def setExecutorMetrics(em: ExecutorMetrics): Unit = {
     executorMetricsHistory += em
     executorMetrics = Some(em)
   }
 }
 
-private[spark] object TaskMetrics {
+private object TaskMetrics {
   def empty: TaskMetrics = new TaskMetrics
 }
 
@@ -159,7 +158,7 @@ private[spark] object TaskMetrics {
  * Method by which input data was read.  Network means that the data was read over the network
  * from a remote block manager (which may have stored the data on-disk or in-memory).
  */
-@DeveloperApi
+//@DeveloperApi
 object DataReadMethod extends Enumeration with Serializable {
   type DataReadMethod = Value
   val Memory, Disk, Hadoop, Network = Value
@@ -169,7 +168,7 @@ object DataReadMethod extends Enumeration with Serializable {
  * :: DeveloperApi ::
  * Metrics about reading input data.
  */
-@DeveloperApi
+//@DeveloperApi
 case class InputMetrics(readMethod: DataReadMethod.Value) {
   /**
    * Total bytes read.
@@ -182,7 +181,7 @@ case class InputMetrics(readMethod: DataReadMethod.Value) {
  * :: DeveloperApi ::
  * Metrics pertaining to shuffle data read in a given task.
  */
-@DeveloperApi
+//@DeveloperApi
 class ShuffleReadMetrics extends Serializable {
   /**
    * Absolute time when this task finished reading shuffle data
@@ -222,7 +221,7 @@ class ShuffleReadMetrics extends Serializable {
  * :: DeveloperApi ::
  * Metrics pertaining to shuffle data written in a given task.
  */
-@DeveloperApi
+//@DeveloperApi
 class ShuffleWriteMetrics extends Serializable {
   /**
    * Number of bytes written for the shuffle by this task
